@@ -1,0 +1,30 @@
+# Node.js dependencies
+node_modules/
+
+
+# macOS files
+.DS_Store
+
+# Editor configuration
+*.swp
+.vscode/
+*.idea/
+
+# Log files
+logs/
+*.log
+
+# Dependency directory
+packages/
+
+# Compiled source
+dist/
+
+# Build output
+build/
+
+# Cache
+.cache/
+
+# OS generated files
+Thumbs.db
