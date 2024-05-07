@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import ProfileDialog from './ProfileDialog';
 
-function DropDownMenu({loggedUser, user, setSelectedChat}) {
+function DropDownMenu({openMenu, setOpenMenu, loggedUser, user, setSelectedChat}) {
 
     const [open, setOpen] = useState(false);
     const [view, setView] = useState('');
@@ -22,7 +22,9 @@ function DropDownMenu({loggedUser, user, setSelectedChat}) {
             <div className=''>
                 {menuItem.map((item) => {
                     return (
-                        <p className='p-2 cursor-pointer w-full hover:bg-white' onClick={() => viewProfile(item)}>{item.name}</p>
+                        <p className='p-2 cursor-pointer w-full hover:bg-white' onClick={() => {
+                            viewProfile(item)
+                        }}>{item.name}</p>
                     )
                 })}
 

@@ -25,21 +25,27 @@ function SignUp({ setIsLoginorSignup }) {
         !email || !email.length ? setEmailRequired("Email is required") : setEmailRequired("");
         !username || !username.length ? setUsernameRequired("Username is required") : setUsernameRequired("");
         !password || !password.length ? setPasswordRequired("Password is required") : setPasswordRequired("");
-        try {
-            const { data } = await axios.post('http://localhost:4000/api/user', { username, email, password, pic })
-                .catch(err => setError(err.response.data));
-            localStorage.setItem("userInfo", JSON.stringify(data));
-            navigate('/chat');
-            setLoading(true);
-        } catch (error) {
+        const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if(regex.test(email)) {
+            try {
+                const { data } = await axios.post('http://localhost:4000/api/user', { username, email, password, pic })
+                    .catch(err => setError(err.response.data));
+                localStorage.setItem("userInfo", JSON.stringify(data));
+                navigate('/chat');
+                setLoading(true);
+            } catch (error) {
+                setLoading(false)
+                console.log(error)
+                setOpen(true)
+            }
+        } else {
             setLoading(false)
-            console.log(error)
-            setOpen(true)
+            setEmailRequired('Invalid email address')
         }
     }
 
     function postDetail(pics) {
-        if (pics.type === "image/jpeg" || pic.type === "image/png") {
+        if (pics.type === "image/jpeg" || pics.type === "image/png") {
             const data = new FormData();
             data.append("file", pics);
             data.append("upload_preset", "chat-app");
@@ -110,16 +116,6 @@ function SignUp({ setIsLoginorSignup }) {
                     </Snackbar>
                 )
             }
-
-            {/* {
-                error && (
-                    <>
-                        <Alert variant="outlined" severity="error" className='mt-1'>
-                            {error}
-                        </Alert>
-                    </>
-                )
-            } */}
 
             <button className='block w-full bg-blue-500 mt-10 h-11 text-white rounded-sm capitalize'>
                 {

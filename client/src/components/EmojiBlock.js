@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-function EmojiBlock({}) {
+function EmojiBlock() {
     const [open, setOpen] = useState(false);
     const [view, setView] = useState('');
 

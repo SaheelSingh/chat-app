@@ -100,7 +100,7 @@ function Login({ setIsLoginorSignup }) {
             </button>
 
             <div className='text-center mt-2'>
-                Already a member?
+                Don't have an account?
                 <button onClick={() => setIsLoginorSignup('signup')} className='m-2 text-blue-500'>SignUp</button>
             </div>
         </form>

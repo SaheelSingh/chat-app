@@ -1,12 +1,6 @@
 import React, { useContext, useState } from 'react';
 import axios from 'axios';
 import { UserContext } from './UserContextProvider';
-// import TextField from '@mui/material/TextField';
-// import Dialog from '@mui/material/Dialog';
-// import DialogContent from '@mui/material/DialogContent';
-// import DialogContentText from '@mui/material/DialogContentText';
-// import CircularProgress from '@mui/material/CircularProgress';
-// import Alert from '@mui/material/Alert';
 import { Button, Alert, TextField, Dialog, DialogContent, DialogContentText, CircularProgress } from '@mui/material';
 
 function SlideDrawer({ open, setOpen }) {
@@ -16,10 +10,26 @@ function SlideDrawer({ open, setOpen }) {
     const { user , setSelectUser , chats, setChats } = useContext(UserContext);
     const [searchUsers, setSearchUsers] = useState([]);
     const [loading, setLoading] = useState(false);
+    const { setSelectedChat } = useContext(UserContext);
+
 
     const handleClose = () => {
         setOpen(false);
+        setSearch('');
+        setSearchLen('');
+        setSearchUsers([]);
     };
+
+    const handleKeyPress = async (event) => {
+        if (event.key === "Enter" && searchLen === '') {
+            event.preventDefault();
+            handleSearch();
+        }
+        if (event.key === "Enter" && search) {
+            event.preventDefault();
+            handleSearch();
+        }
+    }
 
     const handleSearch = async () => {
         const config = {
@@ -38,8 +48,14 @@ function SlideDrawer({ open, setOpen }) {
             try {
                 await axios.get(`http://localhost:4000/api/user?search=${search}`, config)
                     .then((res) => {
+
                         setLoading(false);
-                        setSearchUsers(res.data);
+                        if(res.data.length == 0) {
+                            setSearchLen('User not exists...')
+                            setSearchUsers([])
+                            return;
+                        }
+                        setSearchUsers(res.data);                    
                     }).catch(err => {
                         console.log(err.response.data)
                     })
@@ -60,8 +76,12 @@ function SlideDrawer({ open, setOpen }) {
             
             const { data } = await axios.post('http://localhost:4000/api/chat', {userId}, config)
 
-            if(!chats.find((c) => c.id === data._id)) setChats([data, ...chats]);
+            console.log(chats)
+            if(!chats.find((c) => c.id !== data._id)){ 
+                setChats([data, ...chats]);
+            }
             setSelectUser(data);
+            setSelectedChat(data)
             handleClose();
             setSearch('');
             setSearchUsers([])
@@ -85,6 +105,7 @@ function SlideDrawer({ open, setOpen }) {
                         variant="standard"
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
+                        onKeyDown={handleKeyPress}
                     />
                     <div className='ml-4 mt-2'>
                         <Button
@@ -114,7 +135,7 @@ function SlideDrawer({ open, setOpen }) {
                         searchUsers.map((person) => {
                             return (
                                 <div className=' flex p-2 m-3 cursor-pointer hover:bg-blue-100' key={person._id} onClick={() => accessChat(person._id)}>
-                                    <img src={person.pic} className='h-14 w-14 rounded-full' alt="" />
+                                    <img src={person.pic} className='h-14 w-14 rounded-full object-cover' alt="" />
                                     <div className='flex flex-col ml-5 mr-5'>
                                         <span className='text-lg font-bold'>{person.username}</span>
                                         <span className=''>{person.email}</span>

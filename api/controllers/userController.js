@@ -11,14 +11,22 @@ const signupUser = async (req, res) => {
     if(!email || !username || !password) {
         res.status(400);
         res.json("Please fill all the field!");
+        return;
     }
-
+    
     //check if user already exists
     const userExist = await User.findOne({ username })
     if(userExist) {
         res.status(400);
         res.json("User already exist please enter unique username!");
+        return;
     }
+
+    if(password.length < 6) {
+        res.status(400);
+        res.json('Password must have atleast 8 character!');
+        return
+    } 
 
     const hashPassword = bycrpt.hashSync(password, salt)
 
@@ -52,6 +60,7 @@ const authUser = async (req, res) => {
     if(!username || !password) {
         res.status(400);
         res.json("Please fill all the fields!")
+        return;
     }
 
     if(user) {

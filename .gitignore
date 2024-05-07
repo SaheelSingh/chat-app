@@ -28,3 +28,6 @@ build/
 
 # OS generated files
 Thumbs.db
+
+#upload folder
+api/uploads/
